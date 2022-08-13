@@ -8,8 +8,9 @@ const server = require("net").createServer(aedes.handle);
 const ws = require("ws");
 const PORTLISTEN = process.env.PORT || 3000;
 const portWs = 8000;
-
 const port = 1883;
+
+const portMQ = 8888;
 const { mongoUrl, cookieKey } = require("./keys");
 const cors = require("./middleware/cors.middleware");
 const client = mqtt.connect("mqtt://192.168.100.8:1883");
@@ -21,7 +22,7 @@ const wss = new ws.Server(
   },
   () => console.log("serverStarted")
 );
-
+ws.createServer({ server: httpServer }, aedes.handle);
 app.use(cors);
 let socket;
 wss.on("connection", function connection(ws) {
@@ -54,6 +55,9 @@ const start = async () => {
     });
     server.listen(port, function () {
       console.log(`MQTT Broker started on port ${port}`);
+    });
+    httpServer.listen(portMQ, function () {
+      console.log("websocket server listening on port ", portMQ);
     });
   } catch (e) {
     console.log(e);
