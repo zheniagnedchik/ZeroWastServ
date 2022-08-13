@@ -7,7 +7,7 @@ const Item = require("./models/Item");
 const server = require("net").createServer(aedes.handle);
 const ws = require("ws");
 const PORTLISTEN = process.env.PORT || 3000;
-const portWs = process.env.PORT + 1 || 3002;
+const portWs = 8000;
 
 const port = 1883;
 const { mongoUrl, cookieKey } = require("./keys");
