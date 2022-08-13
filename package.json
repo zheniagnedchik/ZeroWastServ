@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon broker.js"
+    "start": "node broker.js"
   },
   "author": "",
   "license": "ISC",
