@@ -2,6 +2,7 @@ const aedes = require("aedes")();
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const httpServer = require("http").createServer();
 const mqtt = require("mqtt");
 const Item = require("./models/Item");
 const server = require("net").createServer(aedes.handle);
