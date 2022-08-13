@@ -6,7 +6,8 @@ const httpServer = require("http").createServer();
 const mqtt = require("mqtt");
 const Item = require("./models/Item");
 const server = require("net").createServer(aedes.handle);
-const ws = require("ws");
+const ws = require("websocket-stream");
+
 const PORTLISTEN = process.env.PORT || 3000;
 const portWs = 8000;
 const port = 1883;
@@ -14,7 +15,6 @@ const port = 1883;
 const portMQ = 8888;
 const { mongoUrl, cookieKey } = require("./keys");
 const cors = require("./middleware/cors.middleware");
-const { wsAedes } = require("./ws");
 const client = mqtt.connect("mqtt://192.168.100.8:1883");
 const topic = "test123";
 
@@ -24,7 +24,7 @@ const wss = new ws.Server(
   },
   () => console.log("serverStarted")
 );
-wsAedes.createServer({ server: httpServer }, aedes.handle);
+ws.createServer({ server: httpServer }, aedes.handle);
 app.use(cors);
 let socket;
 wss.on("connection", function connection(ws) {
