@@ -1,0 +1,20 @@
+{
+  "name": "mqtt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon broker.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aedes": "^0.47.0",
+    "config": "^3.3.7",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.2",
+    "mosca": "^2.8.3",
+    "mqtt": "^4.3.7",
+    "ws": "^8.8.1"
+  }
+}
