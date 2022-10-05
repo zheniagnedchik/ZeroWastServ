@@ -36,30 +36,29 @@ client.on("message", (topic, message) => {
 client.on("connect", () => {
   client.subscribe(topic);
 });
-
-const start = async () => {
-  const wss = new ws.Server(
-    {
-      port: 8000,
-    },
-    () => console.log("serverStarted")
-  );
-  wss.on("connection", (ws) => {
-    ws.on("message", (message) => {
-      message = JSON.parse(message);
-      console.log(message);
-      wss.clients.forEach((client) => {
-        client.send(
-          JSON.stringify({
-            ...message,
-            new: true,
-            id: Date.now(),
-            time: Date.now(),
-          })
-        );
-      });
+const wss = new ws.Server(
+  {
+    port: 8000,
+  },
+  () => console.log("serverStarted")
+);
+wss.on("connection", (ws) => {
+  ws.on("message", (message) => {
+    message = JSON.parse(message);
+    console.log(message);
+    wss.clients.forEach((client) => {
+      client.send(
+        JSON.stringify({
+          ...message,
+          new: true,
+          id: Date.now(),
+          time: Date.now(),
+        })
+      );
     });
   });
+});
+const start = async () => {
   try {
     await mongoose.connect(
       "mongodb+srv://user:1234@cluster0.1tll05y.mongodb.net/item?retryWrites=true&w=majority"
