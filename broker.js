@@ -18,33 +18,11 @@ const cors = require("./middleware/cors.middleware");
 const client = mqtt.connect("mqtt://192.168.100.8:1883");
 const topic = "test123";
 
-const wss = new ws.Server(
-  {
-    port: 8000,
-  },
-  () => console.log("serverStarted")
-);
-wss.on("connection", (ws) => {
-  ws.on("message", (message) => {
-    message = JSON.parse(message);
-    console.log(message);
-    wss.clients.forEach((client) => {
-      client.send(
-        JSON.stringify({
-          ...message,
-          new: true,
-          id: Date.now(),
-          time: Date.now(),
-        })
-      );
-    });
-  });
-});
 app.use(cors);
 let socket;
-wss.on("connection", function connection(ws) {
-  socket = ws;
-});
+// wss.on("connection", function connection(ws) {
+//   socket = ws;
+// });
 
 client.on("message", (topic, message) => {
   message = message.toString();
@@ -60,6 +38,28 @@ client.on("connect", () => {
 });
 
 const start = async () => {
+  const wss = new ws.Server(
+    {
+      port: 8000,
+    },
+    () => console.log("serverStarted")
+  );
+  wss.on("connection", (ws) => {
+    ws.on("message", (message) => {
+      message = JSON.parse(message);
+      console.log(message);
+      wss.clients.forEach((client) => {
+        client.send(
+          JSON.stringify({
+            ...message,
+            new: true,
+            id: Date.now(),
+            time: Date.now(),
+          })
+        );
+      });
+    });
+  });
   try {
     await mongoose.connect(
       "mongodb+srv://user:1234@cluster0.1tll05y.mongodb.net/item?retryWrites=true&w=majority"
