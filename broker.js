@@ -6,7 +6,7 @@ const httpServer = require("http").createServer();
 const mqtt = require("mqtt");
 const Item = require("./models/Item");
 const server = require("net").createServer(aedes.handle);
-const ws = require("websocket-stream");
+const ws = require("ws");
 
 const PORTLISTEN = process.env.PORT || 3000;
 const portWs = 8000;
@@ -20,11 +20,26 @@ const topic = "test123";
 
 const wss = new ws.Server(
   {
-    port: portWs,
+    port: 8000,
   },
   () => console.log("serverStarted")
 );
-ws.createServer({ server: httpServer }, aedes.handle);
+wss.on("connection", (ws) => {
+  ws.on("message", (message) => {
+    message = JSON.parse(message);
+    console.log(message);
+    wss.clients.forEach((client) => {
+      client.send(
+        JSON.stringify({
+          ...message,
+          new: true,
+          id: Date.now(),
+          time: Date.now(),
+        })
+      );
+    });
+  });
+});
 app.use(cors);
 let socket;
 wss.on("connection", function connection(ws) {
@@ -61,6 +76,7 @@ const start = async () => {
     httpServer.listen(portMQ, function () {
       console.log("websocket server listening on port ", portMQ);
     });
+    httpServer.on;
   } catch (e) {
     console.log(e);
   }
