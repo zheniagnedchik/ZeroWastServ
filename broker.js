@@ -96,6 +96,8 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("ws");
 const PORT = process.env.PORT || 3000;
+const mongoose = require("mongoose");
+const Item = require("./models/Item");
 
 const wss = new Server({ server });
 
@@ -123,3 +125,34 @@ app.get("/", (req, res) => {
 server.listen(PORT, () => {
   console.log("listening on *:3000");
 });
+
+const start = async () => {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://user:1234@cluster0.1tll05y.mongodb.net/item?retryWrites=true&w=majority"
+    );
+    mongoose.connection.on("connected", () => {
+      console.log("connected to mongo");
+    });
+
+    // app.listen(PORTLISTEN, () => {
+    //   console.log("Application listening on port 3333!");
+    // });
+    // server.listen(port, function () {
+    //   console.log(`MQTT Broker started on port ${port}`);
+    // });
+    // httpServer.listen(portMQ, function () {
+    //   console.log("websocket server listening on port ", portMQ);
+    // });
+    // httpServer.on;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+app.get("/getItems", async (req, res) => {
+  console.log(res);
+  const items = await Item.find({});
+  res.send(items);
+});
+start();
