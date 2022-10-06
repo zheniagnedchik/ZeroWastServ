@@ -1,7 +1,7 @@
 const { Schema, model, ObjectId } = require("mongoose");
 
 const Item = new Schema({
-  mess: { type: String },
+  item: { type: Array },
 });
 
 module.exports = model("Item", Item);
