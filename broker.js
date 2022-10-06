@@ -100,7 +100,20 @@ const PORT = process.env.PORT || 3000;
 const wss = new Server({ server });
 
 wss.on("connection", (ws) => {
-  console.log("Client connected");
+  ws.on("message", (message) => {
+    message = JSON.parse(message);
+    console.log(message);
+    wss.clients.forEach((client) => {
+      client.send(
+        JSON.stringify({
+          ...message,
+          new: true,
+          id: Date.now(),
+          time: Date.now(),
+        })
+      );
+    });
+  });
 });
 
 app.get("/", (req, res) => {
