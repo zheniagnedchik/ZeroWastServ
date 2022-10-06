@@ -102,19 +102,44 @@ const Item = require("./models/Item");
 const wss = new Server({ server });
 
 wss.on("connection", (ws) => {
-  ws.on("message", (message) => {
+  ws.on("message", async (message) => {
     message = JSON.parse(message);
-    console.log(message);
-    wss.clients.forEach((client) => {
-      client.send(
-        JSON.stringify({
-          ...message,
-          new: true,
-          id: Date.now(),
-          time: Date.now(),
-        })
+    if (message.event === "update") {
+      const test = await Item.findByIdAndUpdate(
+        { _id: message._id },
+        { $push: { item: message.item } }
       );
-    });
+      if (test) {
+        await wss.clients.forEach((client) => {
+          client.send(
+            JSON.stringify({
+              ...message,
+              new: true,
+              id: Date.now(),
+              time: Date.now(),
+            })
+          );
+        });
+      }
+    } else {
+      console.log("pl");
+    }
+    // switch (message.event) {
+    //   case "update":
+    //     console.log("pl");
+    //     wss.clients.forEach((client) => {
+    //       client.send(
+    //         JSON.stringify({
+    //           ...message,
+    //           new: true,
+    //           id: Date.now(),
+    //           time: Date.now(),
+    //         })
+    //       );
+    //     });
+    //   default:
+    //     console.log("ok");
+    // }
   });
 });
 
