@@ -14,11 +14,11 @@
 
 // const portMQ = 8888;
 // const { mongoUrl, cookieKey } = require("./keys");
-// const cors = require("./middleware/cors.middleware");
+
 // const client = mqtt.connect("mqtt://192.168.100.8:1883");
 // const topic = "test123";
 
-// app.use(cors);
+// ;
 // let socket;
 // // wss.on("connection", function connection(ws) {
 // //   socket = ws;
@@ -98,9 +98,10 @@ const { Server } = require("ws");
 const PORT = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 const Item = require("./models/Item");
+const cors = require("./middleware/cors.middleware");
 
 const wss = new Server({ server });
-
+app.use(cors);
 wss.on("connection", (ws) => {
   ws.on("message", async (message) => {
     message = JSON.parse(message);
