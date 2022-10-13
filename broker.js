@@ -105,10 +105,11 @@ app.use(cors);
 wss.on("connection", (ws) => {
   ws.on("message", async (message) => {
     message = JSON.parse(message);
+
     if (message.event === "update") {
       const test = await Item.findByIdAndUpdate(
         { _id: message._id },
-        { $push: { item: message.item } }
+        { $push: { item: message.item }, $set: { weight: message.item.weight } }
       );
       if (test) {
         await wss.clients.forEach((client) => {
@@ -122,8 +123,24 @@ wss.on("connection", (ws) => {
           );
         });
       }
-    } else {
-      console.log("pl");
+    }
+    if (message.event === "clearCache") {
+      const clearCache = await Item.findByIdAndUpdate(
+        { _id: message._id },
+        { $set: { item: [] } }
+      );
+      if (clearCache) {
+        await wss.clients.forEach((client) => {
+          client.send(
+            JSON.stringify({
+              ...message,
+              new: true,
+              id: Date.now(),
+              time: Date.now(),
+            })
+          );
+        });
+      }
     }
     // switch (message.event) {
     //   case "update":
