@@ -127,7 +127,7 @@ wss.on("connection", (ws) => {
     if (message.event === "waypoint") {
       const waypoint = await Item.findByIdAndUpdate(
         { _id: message._id },
-        { $set: { active: true } }
+        { $set: { waypoint: true } }
       );
       if (waypoint) {
         await wss.clients.forEach((client) => {
